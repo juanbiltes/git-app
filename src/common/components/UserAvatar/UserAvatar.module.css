@@ -1,0 +1,8 @@
+.avatarContainer {
+  display: flex;
+}
+
+.avatar {
+  object-fit: cover;
+  border-radius: 100%;
+} 

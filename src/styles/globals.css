@@ -1,7 +1,4 @@
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@import url('./variables.css');
 
 @media (prefers-color-scheme: dark) {
   :root {
@@ -33,6 +30,23 @@ body {
 a {
   color: inherit;
   text-decoration: none;
+}
+
+li {
+  all: unset
+}
+
+ul {
+  all: unset
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+span {
+  word-break: break-word;
 }
 
 @media (prefers-color-scheme: dark) {

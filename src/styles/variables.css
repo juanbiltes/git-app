@@ -1,0 +1,26 @@
+:root {
+    --spacing-sm: 0.5rem;
+    --spacing-md: 0.75rem;
+    --spacing-lg: 1rem;
+
+    --background: #ffffff;
+    --foreground: #171717;
+
+    --color-primary: rgb(255, 195, 171);
+    --color-primary-10: rgba(var(--color-primary), 0.1);
+    --color-primary-20: rgba(var(--color-primary), 0.2);
+    --color-primary-highlight: rgb(255, 165, 131);
+}
+
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background: #ffffff;
+        --foreground: #171717;
+    
+        --color-primary: rgb(123, 0, 142);
+        --color-primary-10: rgba(var(--color-primary), 0.9);
+        --color-primary-20: rgba(var(--color-primary), 0.8);
+        --color-primary-highlight: rgb(221, 0, 255);
+    }
+  }

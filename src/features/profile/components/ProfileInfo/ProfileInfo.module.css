@@ -1,0 +1,46 @@
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.infoHeader {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.info h2 {
+  font-size: 2rem;
+}
+
+.info p {
+  margin: 0.25rem 0;
+}
+
+.infoItem {
+  margin: 0.25rem 0;
+}
+
+.link {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background-color: var(--color-primary);
+  color: var(--foreground);
+  text-decoration: none;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.link:hover {
+  background-color: var(--color-primary-highlight);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 600px) {
+  .infoHeader {
+    flex-direction: column;
+  }
+} 

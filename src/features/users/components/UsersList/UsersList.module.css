@@ -1,0 +1,42 @@
+.usersList {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    width: 100%;
+    gap: var(--spacing-md);
+}
+
+.userInfo {
+    display: flex;
+    flex-grow: 2;
+    flex-direction: row;
+    align-items: center;
+}
+
+.userItem {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    padding: var(--spacing-md) var(--spacing-sm);
+    align-items: center;
+    border: 1px solid var(--color-primary);
+    border-radius: var(--spacing-md);
+}
+
+.favoritesContainer {
+    display: flex;
+}
+
+.userAvatarContainer {
+    display: flex;
+    margin-right: var(--spacing-md);
+}
+
+.userAvatar {
+    object-fit: cover;
+    border-radius: 100%;
+}
+
+@media (max-width: 480px) {
+
+}
