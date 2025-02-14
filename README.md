@@ -1,6 +1,7 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
-
 ## Decisiones tecnicas
+
+Funcionalidad
+- No agregue funcionalidad de paginado para la app, se podria implementar.
 
 Estilos:
 - Se utiliza css modules para los estilos, para que los estilos sean locales y no afecten a otros componentes. 
