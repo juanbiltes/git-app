@@ -3,14 +3,14 @@ import SearchIcon from "@/public/icons/SearchIcon.svg"
 import { useQueryParam } from "~/common/hooks/useQueryParam"
 import { useDebounce } from "~/common/hooks/useDebounce"
 import { useEffect, useState } from "react"
-import styles from './Search.module.css';
+import styles from './SearchBar.module.css';
 
-interface SearchProps {
+interface SearchBarProps {
   onSearch: (query: string) => void
   placeholder?: string
 }
 
-export default function Search({ onSearch, placeholder = "Search..." }: SearchProps) {
+export default function SearchBar({ onSearch, placeholder = "Search..." }: SearchBarProps) {
   const [queryParam, setQueryParam] = useQueryParam('search')
   const [query, setQuery] = useState(queryParam)
   const debouncedQuery = useDebounce(query, 300)

@@ -1,17 +1,22 @@
 import { render, screen, waitFor, fireEvent } from '@testing-library/react'
 import { SWRConfig } from 'swr'
-import UsersFeature from './UsersFeature'
-import httpClient from '~/services/HttpClient'
+import UsersFeature from './SearchFeature'
+import githubClient from '~/services/github/GithubClient'
 import type { GithubUser } from '~/types/Users'
 import type { GithubSearchResponse } from '~/types/Search'
-import { useFavorites } from '~/common/components/Favorites/hooks/useFavorites'
+import { useFavorites } from '~/common/components/FavoritesButton/hooks/useFavorites'
 
-// Mock the http client and favorites hook
-jest.mock('~/services/HttpClient', () => ({
-    get: jest.fn()
-}))
+// Mock dependencies consistently with useUsersSearch.test.ts
+jest.mock('~/services/github/GithubClient', () => ({
+    search: {
+        searchUsers: jest.fn()
+    },
+    users: {
+        getUsers: jest.fn()
+    }
+}));
 
-jest.mock('~/common/components/Favorites/hooks/useFavorites')
+jest.mock('~/common/components/FavoritesButton/hooks/useFavorites')
 
 const mockBaseUser: GithubUser = {
     id: 1,
@@ -49,31 +54,24 @@ const mockSearchResults: GithubSearchResponse = {
     ]
 }
 
-describe('UsersFeature', () => {
+describe('SearchFeature', () => {
     const mockAddFavorite = jest.fn()
     const mockRemoveFavorite = jest.fn()
 
     beforeEach(() => {
-        jest.clearAllMocks()
+        jest.clearAllMocks();
 
-            // Setup mock implementation for httpClient.get
-            ; (httpClient.get as jest.Mock).mockImplementation((url: string) => {
-                if (url === '/api/users') {
-                    return Promise.resolve(mockUsers)
-                }
-                if (url.startsWith('/api/search?q=')) {
-                    return Promise.resolve(mockSearchResults)
-                }
-                return Promise.reject(new Error('Not found'))
-            })
+        // Update mock implementation for Github client methods
+        (githubClient.users.getUsers as jest.Mock).mockResolvedValue(mockUsers);
+        (githubClient.search.searchUsers as jest.Mock).mockResolvedValue(mockSearchResults);
 
-            // Setup default favorites mock
-            ; (useFavorites as jest.Mock).mockReturnValue({
-                favorites: [],
-                isFavorite: jest.fn().mockReturnValue(false),
-                addFavorite: mockAddFavorite,
-                removeFavorite: mockRemoveFavorite
-            })
+        // Setup default favorites mock
+        (useFavorites as jest.Mock).mockReturnValue({
+            favorites: [],
+            isFavorite: jest.fn().mockReturnValue(false),
+            addFavorite: mockAddFavorite,
+            removeFavorite: mockRemoveFavorite
+        })
     })
 
     it('renders users list and search functionality', async () => {
@@ -179,9 +177,12 @@ describe('UsersFeature', () => {
 
     it('handles no results appropriately', async () => {
         // Override the mock for this specific test
-        ; (httpClient.get as jest.Mock).mockImplementation(() =>
-            Promise.resolve({ data: [] })
-        )
+        (githubClient.users.getUsers as jest.Mock).mockResolvedValue([]);
+        (githubClient.search.searchUsers as jest.Mock).mockResolvedValue({ 
+            items: [], 
+            total_count: 0, 
+            incomplete_results: false 
+        });
 
         render(
             <SWRConfig value={{ provider: () => new Map() }}>
@@ -199,9 +200,8 @@ describe('UsersFeature', () => {
 
     it('handles error states appropriately', async () => {
         // Override the mock for this specific test
-        ; (httpClient.get as jest.Mock).mockImplementation(() =>
-            Promise.reject(new Error('Failed to fetch'))
-        )
+        (githubClient.users.getUsers as jest.Mock).mockRejectedValue(new Error('Failed to fetch'));
+        (githubClient.search.searchUsers as jest.Mock).mockRejectedValue(new Error('Failed to fetch'));
 
         render(
             <SWRConfig value={{ provider: () => new Map() }}>

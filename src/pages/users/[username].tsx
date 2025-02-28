@@ -1,5 +1,6 @@
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
-import Profile from '~/features/profile/ProfileFeature';
+import PageContainer from '~/common/components/PageContainer';
+import Profile from '~/features/Profile/ProfileFeature';
 import githubClient from '~/services/github/GithubClient';
 import { GithubUser } from '~/types/Users';
 
@@ -9,9 +10,9 @@ interface PageProps {
 
 const ProfilePage = ({ user }: PageProps) => {
     return (
-        <div>
+        <PageContainer>
             <Profile user={user} />
-        </div>
+        </PageContainer>
     );
 };
 

@@ -1,8 +1,8 @@
 import { render } from '@testing-library/react';
 import HomePage from './index';
-import Users from '~/features/users/UsersFeature';
+import Users from '~/features/Search/SearchFeature';
 
-jest.mock('~/features/users/UsersFeature', () => ({
+jest.mock('~/features/Search/SearchFeature', () => ({
   __esModule: true,
   default: jest.fn(() => null)
 }));

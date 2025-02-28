@@ -5,7 +5,7 @@ interface FavoriteButtonProps {
   username: string
 }
 
-export function FavoriteButton({ username }: FavoriteButtonProps) {
+export default function FavoriteButton({ username }: FavoriteButtonProps) {
   const { isFavorite, addFavorite, removeFavorite } = useFavorites()
   const favorite = isFavorite(username)
 

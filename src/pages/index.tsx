@@ -1,7 +1,10 @@
-import UsersFeature from "~/features/users/UsersFeature";
+import PageContainer from "~/common/components/PageContainer";
+import SearcbFeature from "~/features/Search/SearchFeature";
 
 export default function HomePage() {
   return (
-    <UsersFeature />
+    <PageContainer>
+      <SearcbFeature />
+    </PageContainer>
   );
 }

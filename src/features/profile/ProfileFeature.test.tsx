@@ -1,10 +1,10 @@
 import { render, screen, within } from '@testing-library/react'
 import ProfileFeature from './ProfileFeature'
-import { useFavorites } from '~/common/components/Favorites/hooks/useFavorites'
+import { useFavorites } from '~/common/components/FavoritesButton/hooks/useFavorites'
 import type { GithubUser } from '~/types/Users'
 
 // Mock the favorites hook
-jest.mock('~/common/components/Favorites/hooks/useFavorites')
+jest.mock('~/common/components/FavoritesButton/hooks/useFavorites')
 
 const mockUser: GithubUser = {
   id: 1,

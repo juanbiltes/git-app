@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react';
 import ProfilePage, { getServerSideProps } from './[username]';
-import Profile from '~/features/profile/ProfileFeature';
+import Profile from '~/features/Profile/ProfileFeature';
 import githubClient from '~/services/github/GithubClient';
 import { GetServerSidePropsContext } from 'next';
 import { GithubUser } from '~/types/Users';

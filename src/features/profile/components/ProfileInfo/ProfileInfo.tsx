@@ -1,7 +1,7 @@
 import { GithubUser } from '~/types/Users'
-import styles from './ProfileInfo.module.css'
 import { PropsWithChildren } from 'react'
-import { FavoriteButton } from '../../../../common/components/Favorites/FavoritesButton'
+import FavoriteButton from '~/common/components/FavoritesButton/FavoritesButton'
+import styles from './ProfileInfo.module.css'
 
 function InfoItem({ children, show = true }: PropsWithChildren<{ show?: boolean }>) {
   if (!children || !show) return;

@@ -4,12 +4,12 @@ describe('GithubClient', () => {
     let client: GithubClient;
 
     beforeEach(() => {
-        process.env.GITHUB_BASE_URL = 'https://api.github.com';
+        process.env.NEXT_PUBLIC_GITHUB_BASE_URL = 'https://api.github.com';
         client = new GithubClient();
     });
 
     it('should initialize with correct base URL', () => {
-        expect(client['baseUrl']).toBe(process.env.GITHUB_BASE_URL);
+        expect(client['baseUrl']).toBe(process.env.NEXT_PUBLIC_GITHUB_BASE_URL);
     });
 
     it('should initialize search client', () => {

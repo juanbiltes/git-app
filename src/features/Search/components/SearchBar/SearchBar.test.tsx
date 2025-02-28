@@ -1,5 +1,5 @@
 import { render, screen, fireEvent, act } from '@testing-library/react'
-import Search from './Search'
+import Search from './SearchBar'
 
 jest.useFakeTimers()
 

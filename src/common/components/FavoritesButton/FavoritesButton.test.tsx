@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react'
-import { FavoriteButton } from './FavoritesButton'
+import FavoriteButton from './FavoritesButton'
 import { useFavorites } from './hooks/useFavorites'
 
 // Mock the useFavorites hook

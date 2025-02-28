@@ -1,7 +1,4 @@
-import { GithubSearchResponse } from '~/types/Search';
 import { HttpClient } from '../HttpClient';
-import { GithubUser } from '~/types/Users';
-import endpoints from './endpoints';
 import { GithubSearchClient } from './resources/Search';
 import { GithubUsersClient } from './resources/Users';
 
@@ -11,7 +8,7 @@ export class GithubClient extends HttpClient {
 
     constructor() {
         super({
-            baseUrl: process.env.GITHUB_BASE_URL
+            baseUrl: process.env.NEXT_PUBLIC_GITHUB_BASE_URL
         });
         
         this.search = new GithubSearchClient(this);

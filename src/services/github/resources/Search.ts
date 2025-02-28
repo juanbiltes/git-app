@@ -3,7 +3,10 @@ import endpoints from '../endpoints';
 import { GithubClient } from '../GithubClient';
 
 export class GithubSearchClient {
-    constructor(private readonly client: GithubClient) {}
+    constructor(private readonly client: GithubClient) {
+        this.client = client;
+        this.searchUsers = this.searchUsers.bind(this);
+    }
 
     searchUsers(query: string) {
         const queryString = new URLSearchParams({
