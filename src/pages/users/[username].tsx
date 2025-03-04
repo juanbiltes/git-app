@@ -1,7 +1,7 @@
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import PageContainer from '~/common/components/PageContainer';
-import Profile from '~/features/Profile/ProfileFeature';
-import githubClient from '~/services/github/GithubClient';
+import Profile from '~/features/profile/ProfileFeature';
+import { getUser } from '~/services/githubClient';
 import { GithubUser } from '~/types/Users';
 
 interface PageProps {
@@ -25,7 +25,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context: Get
 
     let user = null;
     if (username) {
-        user = await githubClient.users.getUser(username); 
+        user = await getUser(username); 
     }
 
     return {

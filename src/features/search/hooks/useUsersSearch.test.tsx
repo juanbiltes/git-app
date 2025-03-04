@@ -1,18 +1,14 @@
 import { renderHook, act } from '@testing-library/react';
 import { SWRConfig } from 'swr';
 import useUsersSearch from './useUsersSearch';
-import githubClient from '~/services/github/GithubClient';
+import { getUsers, searchUsers } from '~/services/githubClient';
 import { useQueryParam } from '~/common/hooks/useQueryParam';
 
 // Mock dependencies
 jest.mock('~/common/hooks/useQueryParam');
-jest.mock('~/services/github/GithubClient', () => ({
-    search: {
-        searchUsers: jest.fn()
-    },
-    users: {
-        getUsers: jest.fn()
-    }
+jest.mock('~/services/githubClient', () => ({
+    getUsers: jest.fn(),
+    searchUsers: jest.fn()
 }));
 
 const mockUseQueryParam = useQueryParam as jest.MockedFunction<typeof useQueryParam>;
@@ -41,18 +37,17 @@ describe('useUsersSearch', () => {
 
     it('should fetch users when no search query is present', async () => {
         const mockUsers = [{ id: 1, login: 'user1' }, { id: 2, login: 'user2' }];
-        (githubClient.users.getUsers as jest.Mock).mockResolvedValue(mockUsers);
+        (getUsers as jest.Mock).mockResolvedValue(mockUsers);
 
         const { result } = renderHook(() => useUsersSearch(), { wrapper });
 
-        // Wait for the data to be loaded
         await act(async () => {
             await new Promise(resolve => setTimeout(resolve, 0));
         });
 
         expect(result.current.users).toEqual(mockUsers);
         expect(result.current.isLoading).toBe(false);
-        expect(githubClient.users.getUsers).toHaveBeenCalled();
+        expect(getUsers).toHaveBeenCalled();
     });
 
     it('should search users when search query is present', async () => {
@@ -63,7 +58,7 @@ describe('useUsersSearch', () => {
         };
 
         mockUseQueryParam.mockReturnValue([searchQuery, jest.fn()]);
-        (githubClient.search.searchUsers as jest.Mock).mockResolvedValue(mockSearchResults);
+        (searchUsers as jest.Mock).mockResolvedValue(mockSearchResults);
 
         const { result } = renderHook(() => useUsersSearch(), { wrapper });
 
@@ -74,7 +69,7 @@ describe('useUsersSearch', () => {
 
         expect(result.current.users).toEqual(mockSearchResults.items);
         expect(result.current.isLoading).toBe(false);
-        expect(githubClient.search.searchUsers).toHaveBeenCalledWith(searchQuery);
+        expect(searchUsers).toHaveBeenCalledWith(searchQuery);
     });
 
     it('should handle search errors and return default users', async () => {
@@ -82,10 +77,10 @@ describe('useUsersSearch', () => {
         const error = new Error('Search failed');
 
         const mockUsers = [{ id: 1, login: 'user1' }, { id: 2, login: 'user2' }];
-        (githubClient.users.getUsers as jest.Mock).mockResolvedValue(mockUsers);
+        (getUsers as jest.Mock).mockResolvedValue(mockUsers);
 
         mockUseQueryParam.mockReturnValue([searchQuery, jest.fn()]);
-        (githubClient.search.searchUsers as jest.Mock).mockRejectedValue(error);
+        (searchUsers as jest.Mock).mockRejectedValue(error);
 
         const { result } = renderHook(() => useUsersSearch(), { wrapper });
 
@@ -106,6 +101,6 @@ describe('useUsersSearch', () => {
             result.current.setSearch('newSearch');
         });
 
-        expect(githubClient.search.searchUsers).toHaveBeenCalledWith('newSearch');
+        expect(searchUsers).toHaveBeenCalledWith('newSearch');
     });
 }); 

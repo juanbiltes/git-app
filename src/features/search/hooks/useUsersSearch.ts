@@ -1,8 +1,8 @@
 import useSWR from 'swr';
 import { GithubUser } from "~/types/Users";
-import { GithubSearchResponse } from "~/types/Search";
+import { GithubSearchResponse } from "~/services/githubClient";
 import { useQueryParam } from "~/common/hooks/useQueryParam";
-import githubClient from '~/services/github/GithubClient';
+import { getUsers, searchUsers } from '~/services/githubClient';
 import { useState } from 'react';
 
 export default function useUsersSearch() {
@@ -11,12 +11,12 @@ export default function useUsersSearch() {
 
     const { data: searchData, error: searchError, isLoading: isSearchLoading } = useSWR<GithubSearchResponse>(
         currentSearch?.length ? currentSearch : null,
-        githubClient.search.searchUsers
+        searchUsers
     );
 
     const { data: usersData, error: usersError, isLoading: isUsersLoading } = useSWR<GithubUser[]>(
         'users',
-        githubClient.users.getUsers
+        getUsers
     );
 
     return {

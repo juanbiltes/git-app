@@ -1,5 +1,4 @@
 import Image from 'next/image'
-import { GithubUser } from '~/types/Users'
 import styles from './UserAvatar.module.css'
 
 interface UserAvatarProps {

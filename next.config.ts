@@ -2,20 +2,16 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
-  reactStrictMode: true,
+  reactStrictMode: false,
   images: {
-    domains: ['avatars.githubusercontent.com'],
-    formats: ['image/avif', 'image/webp'],
-  },
-  experimental: {
-    turbo: {
-      rules: {
-        '*.svg': {
-          loaders: ['@svgr/webpack'],
-          as: '*.js',
-        },
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'avatars.githubusercontent.com',
+        pathname: '/**',
       },
-    },
+    ],
+    formats: ['image/avif', 'image/webp'],
   },
   async redirects() {
     return [

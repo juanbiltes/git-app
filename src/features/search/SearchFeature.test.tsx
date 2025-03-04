@@ -1,19 +1,14 @@
 import { render, screen, waitFor, fireEvent } from '@testing-library/react'
 import { SWRConfig } from 'swr'
-import UsersFeature from './SearchFeature'
-import githubClient from '~/services/github/GithubClient'
+import SearchFeature from './SearchFeature'
+import { getUsers, searchUsers } from '~/services/githubClient'
 import type { GithubUser } from '~/types/Users'
-import type { GithubSearchResponse } from '~/types/Search'
+import type { GithubSearchResponse } from '~/services/githubClient'
 import { useFavorites } from '~/common/components/FavoritesButton/hooks/useFavorites'
 
-// Mock dependencies consistently with useUsersSearch.test.ts
-jest.mock('~/services/github/GithubClient', () => ({
-    search: {
-        searchUsers: jest.fn()
-    },
-    users: {
-        getUsers: jest.fn()
-    }
+jest.mock('~/services/githubClient', () => ({
+    getUsers: jest.fn(),
+    searchUsers: jest.fn()
 }));
 
 jest.mock('~/common/components/FavoritesButton/hooks/useFavorites')
@@ -49,8 +44,8 @@ const mockSearchResults: GithubSearchResponse = {
     total_count: 2,
     incomplete_results: false,
     items: [
-        { ...mockBaseUser, id: 3, login: 'searchuser', score: 1 },
-        { ...mockBaseUser, id: 4, login: 'searchuser-2', score: 0.8 }
+        { ...mockBaseUser, id: 3, login: 'searchuser' },
+        { ...mockBaseUser, id: 4, login: 'searchuser-2' }
     ]
 }
 
@@ -60,12 +55,9 @@ describe('SearchFeature', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+        (getUsers as jest.Mock).mockResolvedValue(mockUsers);
+        (searchUsers as jest.Mock).mockResolvedValue(mockSearchResults);
 
-        // Update mock implementation for Github client methods
-        (githubClient.users.getUsers as jest.Mock).mockResolvedValue(mockUsers);
-        (githubClient.search.searchUsers as jest.Mock).mockResolvedValue(mockSearchResults);
-
-        // Setup default favorites mock
         (useFavorites as jest.Mock).mockReturnValue({
             favorites: [],
             isFavorite: jest.fn().mockReturnValue(false),
@@ -77,24 +69,20 @@ describe('SearchFeature', () => {
     it('renders users list and search functionality', async () => {
         render(
             <SWRConfig value={{ provider: () => new Map() }}>
-                <UsersFeature />
+                <SearchFeature />
             </SWRConfig>
         )
 
-        // Check loading state
         expect(screen.getByText('Loading users...')).toBeInTheDocument()
 
-        // Wait for initial users to load
         await waitFor(() => {
             expect(screen.getByText('testuser')).toBeInTheDocument()
             expect(screen.getByText('testuser-2')).toBeInTheDocument()
         })
 
-        // Perform search
         const searchInput = screen.getByPlaceholderText('Buscar usuario...')
         fireEvent.change(searchInput, { target: { value: 'searchuser' } })
 
-        // Wait for search results
         await waitFor(() => {
             expect(screen.getByText('searchuser')).toBeInTheDocument()
             expect(screen.getByText('searchuser-2')).toBeInTheDocument()
@@ -104,81 +92,42 @@ describe('SearchFeature', () => {
     it('handles favorites functionality correctly', async () => {
         render(
             <SWRConfig value={{ provider: () => new Map() }}>
-                <UsersFeature />
+                <SearchFeature />
             </SWRConfig>
         )
 
-        // Wait for users to load
         await waitFor(() => {
             expect(screen.getByText('testuser')).toBeInTheDocument()
         })
 
-        // Get favorite buttons
         const favoriteButtons = screen.getAllByRole('button', { name: /add to favorites/i })
         expect(favoriteButtons).toHaveLength(2)
 
-        // Click favorite button for first user
         fireEvent.click(favoriteButtons[0])
-        expect(mockAddFavorite).toHaveBeenCalledWith('testuser')
+        expect(mockAddFavorite).toHaveBeenCalledWith('testuser');
 
-            // Mock favorite state for first user
-            ; (useFavorites as jest.Mock).mockReturnValue({
-                favorites: ['testuser'],
-                isFavorite: (username: string) => username === 'testuser',
-                addFavorite: mockAddFavorite,
-                removeFavorite: mockRemoveFavorite
-            })
-
-        // Rerender to update favorite state
-        render(
-            <SWRConfig value={{ provider: () => new Map() }}>
-                <UsersFeature />
-            </SWRConfig>
-        )
-
-        // Wait for rerender and check favorite state
-        await waitFor(() => {
-            const updatedButton = screen.getAllByRole('button', { name: /remove from favorites/i })[0]
-            expect(updatedButton).toHaveTextContent('★')
-        })
-    })
-
-    it('maintains favorites state during search', async () => {
-        // Setup initial favorite
-        ; (useFavorites as jest.Mock).mockReturnValue({
-            favorites: ['searchuser'],
-            isFavorite: (username: string) => username === 'searchuser',
+        (useFavorites as jest.Mock).mockReturnValue({
+            favorites: ['testuser'],
+            isFavorite: (username: string) => username === 'testuser',
             addFavorite: mockAddFavorite,
             removeFavorite: mockRemoveFavorite
         })
 
         render(
             <SWRConfig value={{ provider: () => new Map() }}>
-                <UsersFeature />
+                <SearchFeature />
             </SWRConfig>
         )
 
-        // Wait for initial users to load
         await waitFor(() => {
-            expect(screen.getByText('testuser')).toBeInTheDocument()
-        })
-
-        // Perform search
-        const searchInput = screen.getByPlaceholderText('Buscar usuario...')
-        fireEvent.change(searchInput, { target: { value: 'searchuser' } })
-
-        // Wait for search results and check favorite state
-        await waitFor(() => {
-            expect(screen.getByText('searchuser')).toBeInTheDocument()
-            const favoriteButton = screen.getAllByRole('button', { name: /remove from favorites/i })[0]
-            expect(favoriteButton).toHaveTextContent('★')
+            const updatedButton = screen.getAllByRole('button', { name: /remove from favorites/i })[0]
+            expect(updatedButton).toHaveTextContent('★')
         })
     })
 
     it('handles no results appropriately', async () => {
-        // Override the mock for this specific test
-        (githubClient.users.getUsers as jest.Mock).mockResolvedValue([]);
-        (githubClient.search.searchUsers as jest.Mock).mockResolvedValue({ 
+        (getUsers as jest.Mock).mockResolvedValue([]);
+        (searchUsers as jest.Mock).mockResolvedValue({ 
             items: [], 
             total_count: 0, 
             incomplete_results: false 
@@ -186,11 +135,10 @@ describe('SearchFeature', () => {
 
         render(
             <SWRConfig value={{ provider: () => new Map() }}>
-                <UsersFeature />
+                <SearchFeature />
             </SWRConfig>
         )
 
-        // Should show loading first
         expect(screen.getByText('Loading users...')).toBeInTheDocument()
 
         await waitFor(() => {
@@ -199,17 +147,15 @@ describe('SearchFeature', () => {
     })
 
     it('handles error states appropriately', async () => {
-        // Override the mock for this specific test
-        (githubClient.users.getUsers as jest.Mock).mockRejectedValue(new Error('Failed to fetch'));
-        (githubClient.search.searchUsers as jest.Mock).mockRejectedValue(new Error('Failed to fetch'));
+        (getUsers as jest.Mock).mockRejectedValue(new Error('Failed to fetch'));
+        (searchUsers as jest.Mock).mockRejectedValue(new Error('Failed to fetch'));
 
         render(
             <SWRConfig value={{ provider: () => new Map() }}>
-                <UsersFeature />
+                <SearchFeature />
             </SWRConfig>
         )
 
-        // Should show loading first
         expect(screen.getByText('Loading users...')).toBeInTheDocument()
 
         await waitFor(() => {

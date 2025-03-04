@@ -1,10 +1,10 @@
 import PageContainer from "~/common/components/PageContainer";
-import SearcbFeature from "~/features/Search/SearchFeature";
+import SearchFeature from "~/features/search/SearchFeature";
 
-export default function HomePage() {
+export default function Home() {
   return (
     <PageContainer>
-      <SearcbFeature />
+      <SearchFeature />
     </PageContainer>
   );
 }

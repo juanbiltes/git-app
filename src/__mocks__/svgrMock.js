@@ -1,4 +1,4 @@
-'use strict'
+/* eslint-disable @typescript-eslint/no-require-imports */
 const React = require('react')
 
 const SvgrMock = React.forwardRef((props, ref) => {

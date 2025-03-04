@@ -1,5 +1,5 @@
 import { render } from "@testing-library/react";
-import App from "./_app";
+import App from "../../pages/_app";
 import type { AppProps } from "next/app";
 import MockRouter from "next-router-mock";
 
@@ -28,4 +28,4 @@ describe("_app", () => {
 
     expect(getByText("Test Page")).toBeInTheDocument();
   });
-});
+}); 

@@ -1,5 +1,5 @@
 import { render } from '@testing-library/react';
-import Document from './_document';
+import Document from '../../pages/_document';
 import { Html, Head, Main, NextScript } from 'next/document';
 
 // Mock next/document components
@@ -53,7 +53,7 @@ describe('_document', () => {
     const favicon = container.querySelector('link[rel="icon"]');
 
     // Verify meta content
-    expect(title).toHaveTextContent('Fravega Challenge');
+    expect(title).toHaveTextContent('Git Challenge');
     expect(viewport).toHaveAttribute('content', 'width=device-width, initial-scale=1');
     expect(favicon).toHaveAttribute('href', '/favicon.ico');
   });

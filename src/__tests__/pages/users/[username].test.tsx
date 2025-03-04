@@ -1,22 +1,17 @@
 import { render } from '@testing-library/react';
-import ProfilePage, { getServerSideProps } from './[username]';
-import Profile from '~/features/Profile/ProfileFeature';
-import githubClient from '~/services/github/GithubClient';
+import ProfilePage, { getServerSideProps } from '../../../pages/users/[username]';
+import Profile from '~/features/profile/ProfileFeature';
+import { getUser } from '~/services/githubClient';
 import { GetServerSidePropsContext } from 'next';
 import { GithubUser } from '~/types/Users';
 
-jest.mock('~/features/profile/ProfileFeature', () => ({
+jest.mock('~/features/Profile/ProfileFeature', () => ({
   __esModule: true,
   default: jest.fn(() => null)
 }));
 
-jest.mock('~/services/github/GithubClient', () => ({
-  __esModule: true,
-  default: {
-    users: {
-      getUser: jest.fn()
-    }
-  }
+jest.mock('~/services/githubClient', () => ({
+  getUser: jest.fn()
 }));
 
 describe('ProfilePage', () => {
@@ -69,7 +64,7 @@ describe('ProfilePage', () => {
         resolvedUrl: '/users/testuser'
       };
 
-      (githubClient.users.getUser as jest.Mock).mockResolvedValueOnce(mockUser);
+      (getUser as jest.Mock).mockResolvedValueOnce(mockUser);
 
       const result = await getServerSideProps(mockContext);
 
@@ -78,7 +73,7 @@ describe('ProfilePage', () => {
           user: mockUser
         }
       });
-      expect(githubClient.users.getUser).toHaveBeenCalledWith('testuser');
+      expect(getUser).toHaveBeenCalledWith('testuser');
     });
 
     it('returns null user when username is not provided', async () => {
@@ -97,7 +92,7 @@ describe('ProfilePage', () => {
           user: null
         }
       });
-      expect(githubClient.users.getUser).not.toHaveBeenCalled();
+      expect(getUser).not.toHaveBeenCalled();
     });
   });
 }); 

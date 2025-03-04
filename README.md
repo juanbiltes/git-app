@@ -1,8 +1,5 @@
 ## Decisiones tecnicas
 
-Funcionalidad
-- No agregue funcionalidad de paginado para la app, se podria implementar.
-
 Estilos:
 - Se utiliza css modules para los estilos, para que los estilos sean locales y no afecten a otros componentes. 
 - Utilizo variables de css para los colores y spacings, `variables.css`. En un proyecto tambien seria utilizado para fonts, radios, etc.
@@ -31,13 +28,6 @@ Testing
 - Los features son testeados con react testing library, haciendo tests de integración en el componente principal y tests unitarios en los componentes mas complejos como el Searchbar. Esto permite tener control sobre el feature sin estar acoplado a la implementación.
 - Los common deberian contar con tests unitarios ya que son los componentes candidatos a ser extraidos a una lib. Por cuestiones de tiempo algunos no se implementaron.
 - Los servicios son testeados con jest, utilizando mocks para simular las respuestas de las APIs.
-
-Notas:
-- No estoy muy convencido con el scaffolding de la app, los namings no me convencen. No tengo tiempo de refactorizar. 
-- No abstraje componentes basicos como Button o Card. En una app real deberia haberse hecho.
-- No se implemento una solucion de mocks, en una app productiva deberia hacerse para evitar bloqueos en desarrollo.
-- No se agregan scripts de linting ni precommits. En una app productiva deberia haberse hecho.
-- No estoy muy contento con el resultado final. La realidad es que quise construir una app productiva y no tengo el tiempo de hacerlo actualmente. Mentoreando 2 nuevos hires, entregando features y haciendo procesos. 
 
 ## Getting Started
 

@@ -1,6 +1,6 @@
+import useUsersSearch from './hooks/useUsersSearch';
 import SearchResults from "./components/SearchResults";
 import SearchBar from "./components/SearchBar";
-import useUsersSearch from "./hooks/useUsersSearch";
 
 export default function SearchFeature() {
     const { users, isLoading, error, setSearch } = useUsersSearch();

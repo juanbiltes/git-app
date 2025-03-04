@@ -1,5 +1,5 @@
 import type React from "react"
-import SearchIcon from "@/public/icons/SearchIcon.svg"
+import { SearchIcon } from "~/common/components/Icons/SearchIcon"
 import { useQueryParam } from "~/common/hooks/useQueryParam"
 import { useDebounce } from "~/common/hooks/useDebounce"
 import { useEffect, useState } from "react"
