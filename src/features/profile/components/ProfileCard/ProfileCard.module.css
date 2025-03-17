@@ -4,7 +4,12 @@
   align-items: center;
   gap: 1rem;
   padding: 2rem;
-  background: var(--card-background);
-  border-radius: var(--border-radius);
-  box-shadow: var(--card-shadow);
+  width: 70%;
 } 
+
+@media (max-width: 600px) {
+  .card {
+    padding: 2rem 1rem;
+    width: 100%;
+  }
+}

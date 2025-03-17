@@ -10,7 +10,7 @@ interface UserItemProps {
 
 export function UserItem({ user }: UserItemProps) {
     return (
-        <li className={styles.resultItem}>
+        <div className={styles.resultItem}>
             <Link className={styles.userInfo} href={`/users/${user.login}`}>
                 <div className={styles.avatarContainer}>
                     <UserAvatar username={user.login} src={user.avatar_url} size={48} />
@@ -22,6 +22,6 @@ export function UserItem({ user }: UserItemProps) {
             <div className={styles.favoritesContainer}>
                 <FavoriteButton username={user.login} />
             </div>
-        </li>
+        </div>
     )
 } 

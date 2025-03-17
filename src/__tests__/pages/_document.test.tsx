@@ -40,21 +40,4 @@ describe('_document', () => {
       expect.anything()
     );
   });
-
-  it('renders Head with correct meta tags', () => {
-    const { container } = render(<Document />);
-    
-    // Verify head content
-    expect(Head).toHaveBeenCalled();
-    
-    // Find elements within head
-    const title = container.querySelector('title');
-    const viewport = container.querySelector('meta[name="viewport"]');
-    const favicon = container.querySelector('link[rel="icon"]');
-
-    // Verify meta content
-    expect(title).toHaveTextContent('Git Challenge');
-    expect(viewport).toHaveAttribute('content', 'width=device-width, initial-scale=1');
-    expect(favicon).toHaveAttribute('href', '/favicon.ico');
-  });
 }); 

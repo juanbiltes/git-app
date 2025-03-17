@@ -1,38 +1,32 @@
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
-import PageContainer from '~/common/components/PageContainer';
-import Profile from '~/features/profile/ProfileFeature';
+import { ProfileFeature } from '~/features/profile/ProfileFeature';
 import { getUser } from '~/services/githubClient';
 import { GithubUser } from '~/types/Users';
+import { API_ERROR_TYPES, ApiError, WithApiErrorProps } from '~/types/errors';
 
-interface PageProps {
-    user: GithubUser
+interface ProfilePageProps extends WithApiErrorProps {
+  readonly user?: GithubUser;
 }
 
-const ProfilePage = ({ user }: PageProps) => {
-    return (
-        <PageContainer>
-            <Profile user={user} />
-        </PageContainer>
-    );
-};
-
-interface Props {
-    user: GithubUser | null;
+export default function ProfilePage({ user, error }: ProfilePageProps): JSX.Element {
+  return <ProfileFeature user={user} error={error} />;
 }
 
-export const getServerSideProps: GetServerSideProps<Props> = async (context: GetServerSidePropsContext) => {
+export const getServerSideProps = (
+  async (context: GetServerSidePropsContext) => {
     const username = context.params?.username as string;
 
-    let user = null;
-    if (username) {
-        user = await getUser(username); 
+    try {
+      const user = await getUser(username);
+      return { props: { user } };
+    } catch (error: unknown) {
+      if (error && typeof error === 'object' && 'type' in error) {
+        const apiError = error as ApiError;
+        if (apiError.type === API_ERROR_TYPES.RATE_LIMIT) {
+          return { props: { error: apiError } };
+        }
+      }
+      return { notFound: true };
     }
-
-    return {
-        props: {
-            user,
-        },
-    };
-};
-
-export default ProfilePage;
+  }
+) satisfies GetServerSideProps<ProfilePageProps>

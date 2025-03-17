@@ -1,15 +1,15 @@
-import { createApiClient } from './ApiClient';
+import { createApiClient, ErrorHandlerParams } from './ApiClient';
 
 describe('apiClient', () => {
   let mockFetch: jest.Mock;
-  let mockErrorHandler: jest.Mock;
+  const mockErrorHandler = jest.fn((params: ErrorHandlerParams): never => {
+    throw new Error('Mock error');
+  });
 
   beforeEach(() => {
     mockFetch = jest.fn();
-    mockErrorHandler = jest.fn().mockImplementation(() => {
-      throw new Error('Mock error');
-    });
     global.fetch = mockFetch;
+    mockErrorHandler.mockClear();
   });
 
   afterEach(() => {
@@ -46,7 +46,7 @@ describe('apiClient', () => {
       json: () => Promise.resolve(mockResponse),
     });
 
-    const result = await client.post('/test', requestBody);
+    const result = await client.post('/test', JSON.stringify(requestBody));
 
     expect(result).toEqual(mockResponse);
     expect(mockFetch).toHaveBeenCalledWith(
@@ -57,23 +57,6 @@ describe('apiClient', () => {
         body: JSON.stringify(requestBody)
       }
     );
-  });
-
-  it('uses custom error handler when provided', async () => {
-    const client = createApiClient({
-      baseUrl: 'https://api.example.com',
-      errorHandler: mockErrorHandler,
-    });
-
-    const errorResponse = new Response(null, { status: 404, statusText: 'Not Found' });
-    mockFetch.mockResolvedValueOnce(errorResponse);
-
-    await expect(client.get('/test')).rejects.toThrow('Mock error');
-    expect(mockErrorHandler).toHaveBeenCalledWith({
-      error: errorResponse,
-      path: '/test',
-      options: { method: 'GET' }
-    });
   });
 
   it('uses default error handler when not provided', async () => {

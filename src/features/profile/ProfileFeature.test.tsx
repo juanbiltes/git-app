@@ -1,10 +1,30 @@
-import { render, screen, within } from '@testing-library/react'
-import ProfileFeature from './ProfileFeature'
+import { render, screen } from '@testing-library/react'
+import { ProfileFeature } from './ProfileFeature'
 import { useFavorites } from '~/common/components/FavoritesButton/hooks/useFavorites'
 import type { GithubUser } from '~/types/Users'
+import { useRouter } from 'next/router'
 
 // Mock the favorites hook
 jest.mock('~/common/components/FavoritesButton/hooks/useFavorites')
+
+// Mock the router differently
+jest.mock('next/router', () => ({
+  useRouter: jest.fn()
+}))
+
+// Create mock router object
+const mockRouter = {
+  query: {},
+  push: jest.fn(),
+  pathname: '',
+  route: '',
+  asPath: '',
+  events: {
+    on: jest.fn(),
+    off: jest.fn(),
+    emit: jest.fn(),
+  }
+}
 
 const mockUser: GithubUser = {
   id: 1,
@@ -36,14 +56,18 @@ const mockUser: GithubUser = {
 
 describe('ProfileFeature', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    jest.clearAllMocks()
     
-    (useFavorites as jest.Mock).mockReturnValue({
+    // Set up router mock for each test
+    ;(useRouter as jest.Mock).mockReturnValue(mockRouter)
+    
+    // Set up favorites mock
+    ;(useFavorites as jest.Mock).mockReturnValue({
       favorites: [],
       isFavorite: jest.fn().mockReturnValue(false),
       addFavorite: jest.fn(),
       removeFavorite: jest.fn()
-    });
+    })
   })
 
   it('renders profile information correctly', () => {
@@ -57,7 +81,7 @@ describe('ProfileFeature', () => {
     render(<ProfileFeature user={userWithInfo} />)
 
     // Check if main user information is displayed
-    expect(screen.getByRole('heading', { name: userWithInfo.login })).toBeInTheDocument()
+    expect(screen.getByText(userWithInfo.login)).toBeInTheDocument()
     
     // Check bio and company info
     expect(screen.getByText(userWithInfo.bio)).toBeInTheDocument()
@@ -65,71 +89,41 @@ describe('ProfileFeature', () => {
     
     // Check followers and member since info
     expect(screen.getByText(`${userWithInfo.followers} followers`)).toBeInTheDocument()
-    expect(screen.getByText('Member since: 2020')).toBeInTheDocument()
+    expect(screen.getByText('Member since 2020')).toBeInTheDocument()
 
-    // Check GitHub profile link
-    const githubLink = screen.getByRole('link', { name: /view github profile/i })
-    expect(githubLink).toHaveAttribute('href', userWithInfo.html_url)
-
-    // Check avatar - using Next.js Image component URL format
+    // Check avatar
     const avatar = screen.getByRole('img', { name: `${userWithInfo.login}'s avatar` })
     expect(avatar).toHaveAttribute('src', expect.stringContaining(encodeURIComponent(userWithInfo.avatar_url)))
   })
 
   it('renders profile links correctly', () => {
-    render(<ProfileFeature  user={mockUser} />)
-
-    // Check profile links
-    const followersLink = screen.getByRole('link', { name: /followers/i })
-    expect(followersLink).toHaveAttribute('href', mockUser.followers_url)
-    
-    const reposLink = screen.getByRole('link', { name: /repositories/i })
-    expect(reposLink).toHaveAttribute('href', mockUser.repos_url)
-    
-    const gistsLink = screen.getByRole('link', { name: /gists/i })
-    expect(gistsLink).toHaveAttribute('href', mockUser.gists_url)
-  })
-
-  it('integrates with favorites functionality', () => {
-    const mockAddFavorite = jest.fn();
-    const mockRemoveFavorite = jest.fn();
-    
-    (useFavorites as jest.Mock).mockReturnValue({
-      favorites: [],
-      isFavorite: jest.fn().mockReturnValue(false),
-      addFavorite: mockAddFavorite,
-      removeFavorite: mockRemoveFavorite
-    })
-
-    const { rerender } = render(<ProfileFeature user={mockUser} />)
-
-    // Check unfavorited state
-    const favoriteButton = screen.getByRole('button', { name: /add to favorites/i });
-    expect(favoriteButton).toHaveTextContent('☆');
-
-    // Setup favorites mock for favorited state
-    (useFavorites as jest.Mock).mockReturnValue({
-      favorites: [],
-      isFavorite: jest.fn().mockReturnValue(true),
-      addFavorite: mockAddFavorite,
-      removeFavorite: mockRemoveFavorite
-    })
-
-    // Rerender with new favorites state
-    rerender(<ProfileFeature user={mockUser} />)
-
-    // Check favorited state
-    expect(favoriteButton).toHaveTextContent('★')
-    expect(favoriteButton).toHaveAttribute('aria-label', 'Remove from favorites')
-  })
-
-  it('handles missing optional user information gracefully', () => {
     render(<ProfileFeature user={mockUser} />)
 
-    // Optional fields should not be present
-    expect(screen.queryByText('Test bio')).not.toBeInTheDocument()
-    expect(screen.queryByText('Test Company')).not.toBeInTheDocument()
-    expect(screen.queryByRole('link', { name: /website/i })).not.toBeInTheDocument()
-    expect(screen.queryByRole('link', { name: /twitter/i })).not.toBeInTheDocument()
+    // Check profile links
+    const followersLink = screen.getByRole('tab', { name: /followers/i })
+    expect(followersLink).toBeInTheDocument()
+    
+    const reposLink = screen.getByRole('tab', { name: /repositories/i })
+    expect(reposLink).toBeInTheDocument()
+    
+    const followingLink = screen.getByRole('tab', { name: /following/i })
+    expect(followingLink).toBeInTheDocument()
+  })
+
+  it('renders profile tabs correctly', () => {
+    // Update router query for this specific test
+    mockRouter.query = { tab: 'repositories' }
+    
+    render(<ProfileFeature user={mockUser} />)
+
+    const tabs = screen.getAllByRole('tab')
+    const navigationTabs = tabs.filter(tab => 
+      ['Followers', 'Repositories', 'Following'].includes(tab.textContent || '')
+    )
+    expect(navigationTabs).toHaveLength(3)
+    
+    expect(navigationTabs[0]).toHaveTextContent('Followers')
+    expect(navigationTabs[1]).toHaveTextContent('Repositories')
+    expect(navigationTabs[2]).toHaveTextContent('Following')
   })
 }) 

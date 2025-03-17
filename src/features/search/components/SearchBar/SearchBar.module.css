@@ -8,7 +8,7 @@
   padding: var(--spacing-md) var(--spacing-lg);
   padding-right: calc(var(--spacing-lg) * 2.5);
   border: 2px solid var(--color-primary);
-  border-radius: var(--spacing-md);
+  border-radius: var(--border-radius-md);
   font-size: 1rem;
   transition: all 0.3s ease;
 }

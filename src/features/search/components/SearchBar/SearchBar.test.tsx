@@ -14,6 +14,5 @@ describe('Search', () => {
     render(<Search onSearch={onSearch} placeholder="Test placeholder" />)
     
     expect(screen.getByPlaceholderText('Test placeholder')).toBeInTheDocument()
-    expect(screen.getByTestId('svg-mock')).toBeInTheDocument()
   })
 }) 

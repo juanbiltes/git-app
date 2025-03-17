@@ -57,7 +57,6 @@ describe('SearchFeature', () => {
         jest.clearAllMocks();
         (getUsers as jest.Mock).mockResolvedValue(mockUsers);
         (searchUsers as jest.Mock).mockResolvedValue(mockSearchResults);
-
         (useFavorites as jest.Mock).mockReturnValue({
             favorites: [],
             isFavorite: jest.fn().mockReturnValue(false),
@@ -73,7 +72,8 @@ describe('SearchFeature', () => {
             </SWRConfig>
         )
 
-        expect(screen.getByText('Loading users...')).toBeInTheDocument()
+        // Check for loading spinner
+        expect(screen.getByLabelText('Loading...')).toBeInTheDocument()
 
         await waitFor(() => {
             expect(screen.getByText('testuser')).toBeInTheDocument()
@@ -139,7 +139,8 @@ describe('SearchFeature', () => {
             </SWRConfig>
         )
 
-        expect(screen.getByText('Loading users...')).toBeInTheDocument()
+        // Check for loading spinner
+        expect(screen.getByLabelText('Loading...')).toBeInTheDocument()
 
         await waitFor(() => {
             expect(screen.getByText("No results available")).toBeInTheDocument()
@@ -156,7 +157,8 @@ describe('SearchFeature', () => {
             </SWRConfig>
         )
 
-        expect(screen.getByText('Loading users...')).toBeInTheDocument()
+        // Check for loading spinner
+        expect(screen.getByLabelText('Loading...')).toBeInTheDocument()
 
         await waitFor(() => {
             expect(screen.getByText("Service is currently unavailable")).toBeInTheDocument()

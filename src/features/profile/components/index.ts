@@ -1,3 +1,3 @@
 export { ProfileInfo } from './ProfileInfo'
-export { ProfileLinks } from './ProfileLinks'
+export { ProfileTabs } from './ProfileTabs'
 export { ProfileCard } from './ProfileCard'

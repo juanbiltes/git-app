@@ -6,3 +6,13 @@
   object-fit: cover;
   border-radius: 100%;
 } 
+
+.favoriteButtonRelativeContainer {
+  position: relative;
+}
+
+.favoriteButtonAbsoluteContainer {
+  position: absolute;
+  bottom: 0;
+  right: var(--spacing-lg);
+}

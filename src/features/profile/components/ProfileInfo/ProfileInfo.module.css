@@ -1,19 +1,29 @@
 .info {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
+  gap: var(--spacing-lg);
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: var(--spacing-lg);
 }
 
 .infoHeader {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   gap: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
+  align-items: center;
+  justify-content: center;
 }
 
 .info h2 {
-  font-size: 2rem;
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0;
 }
 
 .info p {
@@ -21,26 +31,68 @@
 }
 
 .infoItem {
-  margin: 0.25rem 0;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-sm) 0;
+  color: var(--foreground);
+  font-size: 1rem;
+  line-height: 1.5;
 }
 
-.link {
-  display: inline-block;
-  padding: 0.5rem 1rem;
-  background-color: var(--color-primary);
+.infoItem p {
+  margin: 0;
+  padding: 0;
+}
+
+.infoIcon {
+  display: flex;
+  align-items: center;
+  font-size: 1.25rem;
+  opacity: 0.8;
+  min-width: 24px;
+  justify-content: center;
+}
+
+.nameLink {
   color: var(--foreground);
   text-decoration: none;
-  border-radius: 0.5rem;
-  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+  transition: all 0.2s ease;
+  position: relative;
 }
 
-.link:hover {
-  background-color: var(--color-primary-highlight);
-  transform: translateY(-2px);
+.nameLink:hover {
+  opacity: 0.7;
+}
+
+.nameLink svg {
+  width: 14px;
+  height: 14px;
+  color: var(--foreground);
+  opacity: 0.5;
+  transition: all 0.2s ease;
+  margin-top: 6px;
+  margin-left: -4px;
+}
+
+.nameLink:hover svg {
+  opacity: 0.7;
+  transform: translate(2px, -2px);
 }
 
 @media (max-width: 600px) {
+  .info {
+    padding: var(--spacing-md);
+  }
+
   .infoHeader {
     flex-direction: column;
+  }
+
+  .info h2 {
+    font-size: 1.75rem;
   }
 } 

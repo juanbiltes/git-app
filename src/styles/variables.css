@@ -10,6 +10,9 @@
     --color-primary-10: rgba(var(--color-primary), 0.1);
     --color-primary-20: rgba(var(--color-primary), 0.2);
     --color-primary-highlight: rgb(255, 165, 131);
+
+    --border-radius-md: var(--spacing-sm);
+    --border-radius-md: var(--spacing-md);
 }
 
 

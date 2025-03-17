@@ -1,13 +1,12 @@
 import { render } from '@testing-library/react';
 import ProfilePage, { getServerSideProps } from '../../../pages/users/[username]';
-import Profile from '~/features/profile/ProfileFeature';
+import { ProfileFeature } from '~/features/profile/ProfileFeature';
 import { getUser } from '~/services/githubClient';
 import { GetServerSidePropsContext } from 'next';
 import { GithubUser } from '~/types/Users';
 
-jest.mock('~/features/Profile/ProfileFeature', () => ({
-  __esModule: true,
-  default: jest.fn(() => null)
+jest.mock('~/features/profile/ProfileFeature', () => ({
+  ProfileFeature: jest.fn(() => null)
 }));
 
 jest.mock('~/services/githubClient', () => ({
@@ -45,7 +44,7 @@ describe('ProfilePage', () => {
     it('renders Profile component with user data', () => {
       render(<ProfilePage user={mockUser} />);
 
-      expect(Profile).toHaveBeenCalledWith(
+      expect(ProfileFeature).toHaveBeenCalledWith(
         expect.objectContaining({
           user: mockUser
         }),
@@ -76,7 +75,7 @@ describe('ProfilePage', () => {
       expect(getUser).toHaveBeenCalledWith('testuser');
     });
 
-    it('returns null user when username is not provided', async () => {
+    it('returns notFound when username is not provided', async () => {
       const mockContext: GetServerSidePropsContext = {
         params: {},
         req: {} as any,
@@ -85,14 +84,11 @@ describe('ProfilePage', () => {
         resolvedUrl: '/users/'
       };
 
+      (getUser as jest.Mock).mockRejectedValueOnce({ notFound: true });
+
       const result = await getServerSideProps(mockContext);
 
-      expect(result).toEqual({
-        props: {
-          user: null
-        }
-      });
-      expect(getUser).not.toHaveBeenCalled();
+      expect(result).toEqual({ notFound: true });
     });
   });
 }); 

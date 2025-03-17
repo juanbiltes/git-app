@@ -1,7 +1,7 @@
 import { GithubUser } from "~/types/Users";
-import LoadingState from './components/LoadingState';
+import LoadingState from '~/common/components/LoadingState';
 import ErrorState from './components/ErrorState';
-import { UsersList } from './components/UsersList'
+import { UsersList } from '~/common/components/UsersList'
 
 interface SearchResultsProps {
     users: GithubUser[];
@@ -18,15 +18,13 @@ export default function SearchResults({ users, isLoading, error }: SearchResults
     const errorMessage = error ? "Service is currently unavailable" : !users.length ? 'No results available' : '';
     if (error || !users.length) {
         return (
-            <ErrorState 
-                message={errorMessage} 
+            <ErrorState
+                message={errorMessage}
             />
         );
     }
 
     return (
-        <div>
-            <UsersList users={users} />
-        </div>
+        <UsersList users={users} />
     );
 } 

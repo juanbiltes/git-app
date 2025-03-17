@@ -1,14 +1,18 @@
 import { GithubUser } from '~/types/Users'
 import { PropsWithChildren } from 'react'
-import FavoriteButton from '~/common/components/FavoritesButton/FavoritesButton'
 import styles from './ProfileInfo.module.css'
+import { ExternalLinkIcon } from '~/common/components/Icons/ExternalLinkIcon'
 
-function InfoItem({ children, show = true }: PropsWithChildren<{ show?: boolean }>) {
+function InfoItem({ children, icon, show = true }: PropsWithChildren<{ icon?: React.ReactNode, show?: boolean }>) {
   if (!children || !show) return;
   return (
-    <p className={styles.infoItem}>
-      {children}
-    </p>
+    <div className={styles.infoItem}>
+      <span className={styles.infoIcon}>{ icon }</span>
+      <p>
+        {children}
+      </p>
+    </div>
+
   )
 }
 
@@ -19,17 +23,16 @@ interface ProfileInfoProps {
 export function ProfileInfo({ user }: ProfileInfoProps) {
   return (
     <div className={styles.info}>
-      <span className={styles.infoHeader}>
-        <h2>{user.login}</h2>
-        <FavoriteButton username={user.login} />
-      </span>
-      <InfoItem>{user?.bio}</InfoItem>
-      <InfoItem show={!!user?.company}>Working at {user.company}</InfoItem>
-      <InfoItem show={!!user?.followers}>{user.followers} followers</InfoItem>
-      <InfoItem show={!!user?.created_at}>Member since: {new Date(user.created_at!).getFullYear()}</InfoItem>
-      <a href={user.html_url} target="_blank" rel="noopener noreferrer" className={styles.link}>
-        View GitHub Profile
-      </a>
-    </div>
+      <h2 className={styles.infoHeader}>
+        <a href={user.html_url} target="_blank" rel="noopener noreferrer" className={styles.nameLink}>
+          {user.login}
+          <ExternalLinkIcon />
+        </a>
+      </h2>
+      <InfoItem icon="👤">{user?.bio}</InfoItem>
+      <InfoItem show={!!user?.company} icon="🛠️">Working at {user.company}</InfoItem>
+      <InfoItem show={!!user?.followers} icon="👥">{ user.followers } followers</InfoItem >
+      <InfoItem show={!!user?.created_at} icon="📅">Member since {new Date(user.created_at!).getFullYear()}</InfoItem>
+    </div >
   )
 } 
